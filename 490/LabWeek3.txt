@@ -1,0 +1,609 @@
+/**
+ * PetStore.java
+ * Name: Richard Roman and Hubert Walton
+ * Course: 490
+ * Lab01
+ * Email: raroman@coastal.edu / hewalton@coastal.edu
+ * Date: 20/08/2014
+ */
+import java.io.*;
+import java.util.*;
+
+public class PetStore {
+	Scanner input = new Scanner(System.in);
+	private ArrayList<Product> inventory;
+	private int numItems;
+	private double currentBalance;
+	private String storeName;
+	private Cart theCart; 
+	
+	//Default Constructor
+	public PetStore() throws FileNotFoundException{
+		this.numItems = 0;
+		this.currentBalance = 0;
+		this.storeName = "PetMart";
+		this.inventory = new ArrayList<Product>();
+		this.theCart = new Cart();
+		loadInventory();
+	}
+	
+	//Constructor that takes only the name
+	public PetStore(String aName) throws FileNotFoundException{
+		this.numItems = 0;
+		this.currentBalance = 0;
+		this.storeName = aName;
+		this.inventory = new ArrayList<Product>();
+		this.theCart = new Cart();
+		loadInventory();	
+	}
+	
+	public String getName(){
+		return this.storeName;
+	}
+	
+	public void setName(String aName){
+		this.storeName = aName;
+	}
+	
+	//get balance
+	public double getBalance(){
+		return this.currentBalance;
+	}
+	//add product takes a product pointer as a parameter and adds to the inventory array
+	public void addProduct(Product product){
+			inventory.add(product);
+			System.out.println(product);
+	}
+	
+	//load inventory
+	public void loadInventory() throws FileNotFoundException{
+		File inputFile = new File("psinventory.txt");
+		Scanner input = new Scanner(inputFile);
+		input.useDelimiter(",|\\n");
+		
+		while(input.hasNext()){
+			String tempType = input.next();
+			
+			if(tempType.equalsIgnoreCase("p")){
+				String tempName = input.next();
+				String tempDescription = input.next();
+				double tempPrice = input.nextDouble();
+				int tempQuantity = input.nextInt();
+				int tempInteraction = input.nextInt();
+				String diet = input.next();
+				double weight = input.nextDouble();
+				
+				Product newProduct = new Pet(tempName, tempDescription, tempPrice, tempQuantity, tempType, tempInteraction, diet, weight);
+				
+				addProduct(newProduct);
+			}
+			
+			if(tempType.equalsIgnoreCase("s")){
+				String tempName = input.next();
+				String tempDescription = input.next();
+				double tempPrice = input.nextDouble();
+				int tempQuantity = input.nextInt();
+				String manufacturer = input.next();
+				
+				Product newProduct = new Supply(tempName, tempDescription, tempPrice, tempQuantity, tempType, manufacturer);
+				
+				addProduct(newProduct);
+			}	
+			//input.next();
+			
+			this.numItems += 1;
+		}
+		input.close();
+	}//end load inventory
+	
+	public void start() throws FileNotFoundException{
+		int option = 0;
+		int answer = 0;
+		Pet temp = new Pet(); //temporary Pet Object
+		Supply tems = new Supply(); //temporary Supply Object
+		 
+			while(answer!=5){
+			
+				System.out.println("Welcome to " +storeName+ " PetStore!");
+				System.out.println("Please choose an option from the menu."+"\n"
+						+ "1. Browse all Products (Pets and Supplies)"+ "\n"
+						+ "2. Browse all Pets" + "\n"
+						+ "3. Browse all Supplies" + "\n"
+						+ "4. Checkout" + "\n"
+						+ "5. Exit" + "\n");
+				
+				answer = input.nextInt();
+				
+				if(answer==1){
+					for(int index = 0; index < inventory.size(); index++){
+						
+						
+						System.out.println(inventory.get(index).getName()+" . ");
+						System.out.println("See details enter 1");
+						System.out.println("To continue enter 0");
+						option = input.nextInt();
+						
+						
+						//details page
+						if(option != 0){		
+							
+							System.out.println(inventory.get(index).getDescription()+" , "
+							+ inventory.get(index).getPrice()+" , "
+							+ inventory.get(index).getType()+" . ");
+							
+							//check if pet or supply object
+							if(inventory.get(index).getType().equalsIgnoreCase("p")){
+								temp = (Pet) inventory.get(index);
+								//temporary Pet object
+								
+								System.out.println(temp.getInteractionLevel()+" , "
+								+ temp.getDiet()+" , "
+								+ temp.getWeight()+" . ");
+								
+							}
+							if(inventory.get(index).getType().equalsIgnoreCase("s")){
+								tems = (Supply) inventory.get(index);
+								//temporary Supply object
+								
+								System.out.println(tems.getManufacturer());
+								
+							}
+							
+							System.out.println("Would you like add item to cart? yes/no");
+							String option2 = input.next();
+							
+							if(option2.equalsIgnoreCase("yes")){
+								Product theProduct = inventory.get(index);
+								theCart.addProduct(theProduct);
+							}
+							
+						}//end options
+					}//end for
+				}
+					
+				else if(answer==2){
+					for(int index = 0; index < inventory.size(); index++){
+						if(inventory.get(index).getType().equalsIgnoreCase("p")){
+							System.out.println(inventory.get(index).getName()+" . ");
+							System.out.println("See details enter 1");
+							System.out.println("To continue enter 0");
+							option = input.nextInt();
+							
+							if(option != 0){		
+								temp = (Pet) inventory.get(index);
+								//temporary Pet object
+								
+								System.out.println(inventory.get(index).getDescription()+" , "
+								+ temp.getPrice()+" , "
+								+ temp.getType()+" , "
+								+ temp.getInteractionLevel()+" , "
+								+ temp.getDiet()+" , "
+								+ temp.getWeight()+" . ");
+								
+								System.out.println("Would you like add item to cart? yes/no");
+								String option2 = input.next();
+								
+								if(option2.equalsIgnoreCase("yes")){
+									Product theProduct = inventory.get(index);
+									theCart.addProduct(theProduct);
+								}
+							}
+						}
+					}//end for loop
+				}
+				else if(answer==3){
+					for(int index = 0; index < inventory.size(); index++){
+						if(inventory.get(index).getType().equalsIgnoreCase("s")){
+							System.out.println(inventory.get(index).getName()+" . ");
+							System.out.println("See details enter 1");
+							System.out.println("To continue enter 0");
+							option = input.nextInt();
+						}
+						if(option != 0){		
+							tems = (Supply) inventory.get(index);
+							//temporary Supply object
+							
+							System.out.println(inventory.get(index).getDescription()+" , "
+							+ tems.getPrice()+" , "
+							+ tems.getType()+" , "
+							+ tems.getManufacturer()+" . ");
+							
+							System.out.println("Would you like add item to cart? yes/no");
+							String option2 = input.next();
+							
+							if(option2.equalsIgnoreCase("yes")){
+								Product theProduct = inventory.get(index);
+								theCart.addProduct(theProduct);
+							}
+						}
+					}//end for loop
+					
+				}
+				else if(answer==4){
+
+					checkout();
+					
+				}
+				else if(answer==5){
+					stop();
+				}
+				else{
+					System.out.println("Please enter a valid option");
+				}
+			}//end while loop
+	}//end start
+	
+	public void checkout(){
+		
+		String aName = "";
+		System.out.println("Please enter your name.");
+		aName = input.next();
+		
+		currentBalance += theCart.checkout(aName);
+		
+		//theCart.emptyCart(); empty cart is done in cart checkout
+	}//End checkout
+	
+	public void stop() throws FileNotFoundException{
+		Pet temp = new Pet(); //temporary Pet Object
+		Supply tems = new Supply(); //temporary Supply Object
+		//implements the exit menu
+		System.out.println("GoodBye");
+		
+		PrintWriter out = new PrintWriter("psinventory.txt");
+		
+		for(int index = 0; index < inventory.size(); index++){
+			
+			out.printf(inventory.get(index).getType()+","
+			+ inventory.get(index).getName()+","
+			+ inventory.get(index).getDescription()+","
+			+ inventory.get(index).getPrice()+","
+			+ inventory.get(index).getQuantity()+",");
+			
+			if(inventory.get(index).getType().equalsIgnoreCase("p"))
+			{
+				temp = (Pet) inventory.get(index);
+				//temporary Pet object
+				out.printf(temp.getInteractionLevel()+","
+				+ temp.getDiet()+","
+				+ temp.getWeight()+"\n");
+			}
+			if(inventory.get(index).getType().equalsIgnoreCase("s"))
+			{
+				tems = (Supply) inventory.get(index);
+				//temporary Supply object
+				out.printf(tems.getManufacturer()+"\n");
+			}
+			
+		}
+		out.close();//Close print writer/file
+	}//End stop
+	
+	public String toString(){
+		String text = "";
+		
+		text += this.numItems;
+		text += this.currentBalance;
+		text += this.storeName;
+		
+		return text;
+	}//End toString
+	
+
+	public static void main(String[] args) throws FileNotFoundException {
+		PetStore p = new PetStore();
+		p.start();
+			
+	}//End main
+}//End PetStore Class
+	
+
+
+// Hello! This Cart class was made by Jonathan O'Brien for CSCI 490 at CCU.
+
+import java.util.*;
+import java.io.*;
+import java.text.*;
+
+public class Cart{
+	// Data
+	public static final int MAX_ITEMS = 500;
+	public static final double TAX = .10;
+
+	public Product[] cart;
+	public int numItems;
+
+	// Constructors
+	public Cart(){
+		cart = new Product[500];
+		numItems = 0;
+	}
+
+	// Functions
+	public String toString(){
+		String output = "";
+		for(int i=0; i<numItems; i++){
+			output += cart[i].toString() + "\n";
+		}
+		output += "Number of items: " + numItems + "\n";
+		return output;
+	}
+
+	public void addProduct(Product p){
+		cart[numItems] = p;
+		numItems++;
+	}
+
+	public void emptyCart(){
+		for(int i = 0; i < numItems; i++){
+			cart[i] = null;
+		}
+		numItems = 0;
+	}
+
+	public double calculateSubtotal(){
+		double subtotal= 0;
+		for(int i = 0; i < numItems; i++){
+			subtotal += cart[i].getPrice();
+		}
+		return subtotal;
+	}
+
+	public double checkout(String name){
+		double subtotal = this.calculateSubtotal();
+		double grandTotal = 0;
+		double discount = 0;
+		double taxed_amount = 0;
+		String receipt = "";
+		String filename = "";
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss-SSS_");
+
+		// Calculate grand total by applying a discount if possible then charging tax
+		if(subtotal >= 100.0){
+			// Ten percent discount on purchases of 100 or more
+			discount = subtotal * .1;
+		}
+		taxed_amount = (subtotal - discount) * (1 - TAX);
+		grandTotal = subtotal - discount + taxed_amount;
+
+		// prepare the receipt
+		// Print the customer's name
+		receipt = "Customer: " + name + "\n";
+		// Print the contents of the cart
+		receipt += this.toString();
+		// Print Subtotal
+		receipt += "\nSubtotal: $" + subtotal;
+		// Print Discount
+		receipt += "\nDiscount: -$" + discount;
+		// Print Taxed amount
+		receipt += "\nTax: $" + taxed_amount;
+		//Print Grand Total
+		receipt += "\nGrand Total: $" + grandTotal;
+		
+		// Now, print the receipt.
+		System.out.println(receipt);
+
+		// Next, we have to save the file. We will use the date and time plus the name to generate the filename.
+		filename = dateFormat.format(now) + name + ".txt";
+		Writer writer = null;
+		try{
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream(filename), "utf-8"));
+		    writer.write(receipt);
+		}
+		catch (IOException ex) {
+			System.out.println("ERROR: Unable to write receipt to file: " + filename + ". Sorry.");
+		}
+		finally {
+		   try {
+			   writer.close();
+		   }
+		   catch (Exception ex) {
+			   
+		   }
+		}
+
+		// Decrement quantity of products
+		for(int i = 0; i < numItems; i++){
+			cart[i].decrementQuantity(1);
+		}
+		
+		// Empty the cart
+		this.emptyCart();
+
+		// Return the Grand Total.
+		return grandTotal;
+	}
+}
+
+// Just letting you know that this is still made by Jonathan O'Brien.
+
+
+public class Pet extends Product {
+	// private variables
+	private int interactionLevel;
+	private String diet;
+	private double weight;
+	
+	public Pet() {
+		interactionLevel = 0;
+		diet = "";
+		weight = 0.0;
+	}
+	
+	public Pet(String n, String desc, double p, int q, String t, int i, String d, double w) {
+		setName(n);
+		setDescription(desc);
+		setPrice(p);
+		incrementQuantity(q);
+		setType(t);
+		interactionLevel = i;
+		diet = d;
+		weight = w;
+	}
+	
+	public void setInteractionLevel(int i) {
+		interactionLevel = i;
+	}
+	
+	public int getInteractionLevel() {
+		return interactionLevel;
+	}
+	
+	public void setDiet(String d) {
+		diet = d;
+	}
+	
+	public String getDiet() {
+		return diet;
+	}
+	
+	public void setWeight(double w) {
+		weight = w;
+	}
+	
+	public double getWeight() {
+		return weight;
+	}
+	
+	public String toString() {
+		return super.toString() + 
+				"   Interaction Level: " +interactionLevel+ 
+				"   Diet: " +diet+ 
+				"   Weight: " +String.format("%.2f", weight)+ " lbs.";
+	}
+	
+	// MAIN PROGRAM FOR TESTING PURPOSES
+	public static void main(String[] args) {
+		/*Pet p = new Pet("Chihuahua", "A small and very loyal breed of dog. This breed is known to be very aggressive and will attack when threatened.", 599.99, 1, "Pet", 3, "Blue Buffalo", 6.1);
+		System.out.println(p.toString());*/
+	}
+	
+
+}
+
+public class Product {
+	
+	// private variables
+	private String name;
+	private String description;
+	private double price;
+	private int quantity;
+	private String type;
+	
+	public Product() {
+		name = "";
+		description = "";
+		price = 0.0;
+		quantity = 0;
+		type = "";
+	}
+	
+	public Product(String n, String d, double p, int q, String t) {
+		name = n;
+		description = d;
+		price = p;
+		quantity = q;
+		type = t;
+	}
+	
+	public void setName(String n) {
+		name = n;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setDescription(String d) {
+		description = d;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setPrice(double p) {
+		price = p;
+	}
+	
+	public double getPrice() {
+		return price;
+	}
+	
+	public void setType(String t) {
+		type = t;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public int getQuantity(){
+		return quantity;
+	}
+	
+	public void incrementQuantity(int q) {
+		quantity += q;
+	}
+	
+	public void decrementQuantity(int q) {
+		quantity -= q;
+	}
+	
+	public String toString() {
+		return "Name: " +getName()+ 
+				"   Description: " +getDescription()+ 
+				"   Type: " +getType()+ 
+				"   Price: $" +String.format("%.2f", getPrice())+ 
+				"   Quantity: " +quantity;
+	}
+	
+	// MAIN PROGRAM FOR TESTING PURPOSES
+	public static void main(String[] args) {
+		/*Product p = new Product("Fido's Flea Sudz", "Kills adult fleas and their eggs.", 10.00, 19, "Supply");
+		System.out.println(p.toString());*/
+	}
+
+}
+
+
+public class Supply extends Product {
+	// private variables
+	private String manufacturer;
+	
+	public Supply() {
+		setManufacturer("");
+	}
+	
+	public Supply(String n, String d, double p, int q, String t, String m) {
+		setName(n);
+		setDescription(d);
+		setPrice(p);
+		incrementQuantity(q);
+		setType(t);
+		manufacturer = m;
+	}
+	
+	public void setManufacturer(String m) {
+		manufacturer = m;
+	}
+	
+	public String getManufacturer() {
+		return manufacturer;
+	}
+	
+	public String toString() {
+		return super.toString() + 
+				"   Manufacturer: " +getManufacturer();
+	}
+	
+	// MAIN PROGRAM FOR TESTING PURPOSES
+	public static void main(String[] args) {
+		/*Supply s = new Supply("Fido's Flea Sudz", "Kills adult fleas and their eggs.", 10.00, 19, "Supply", "Hartz (USA)");
+		System.out.println(s.toString());*/
+	}
+
+}
+

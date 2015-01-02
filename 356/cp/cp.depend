@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1408914480 source:/home/mob/Documents/CSCI/356/cp/cp.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+
+1409777793 source:/home/mob/Documents/CSCI/356/cp/mystack.c
+	"mystack.h"
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+
+1408915041 /home/mob/Documents/CSCI/356/cp/mystack.h
+
+1409777846 source:/home/mob/Documents/CSCI/356/cp/student.c
+	"student.h"
+	"mystack.h"
+	"mystack.c"
+	<stdio.h>
+	<stdlib.h>
+
+1408915053 /home/mob/Documents/CSCI/356/cp/student.h
+
+1409777793 /home/mob/Documents/CSCI/356/cp/mystack.c
+	"mystack.h"
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+

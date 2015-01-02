@@ -1,0 +1,68 @@
+#define ddtype double
+#include "matrix.h"
+#include <stdio.h>
+
+void write_graph(char *file_name, int n, ddtype **A) {
+   FILE* out;
+  /* if(!check2Darray(A)) {
+      printf("in write_graph, 2D array appears to have a problem\n");
+      exit(0);
+   }*/
+   printf("writing graph to file %s\n", &file_name);
+   if(!(out = fopen(file_name, "w"))) {
+      printf("--> Cannot open file %s; ", &file_name);
+      fflush(NULL);
+      perror("");
+      exit(0);
+   }
+
+   fwrite(&n, sizeof(int), 1, out); // write  n to file
+   fwrite(A[0], sizeof(ddtype), n*n, out); // write the rest of the data
+   fclose(out);
+}
+
+void alloc2Darray(int m, int n, ddtype ***A){
+    int* temp;
+    int i;
+
+    A = (int**)malloc(n * sizeof(int*));
+    temp = (int*)malloc(n*n * sizeof(int));
+    for (i = 0; i < n; i++) {
+        A[i] = temp + (i * n);
+    }
+}
+
+void make_graph(int n, int l, int u, ddtype ***A){
+    
+}
+
+void read_graph(char *file_name, int *n, ddtype ***A)
+{
+    FILE* in;
+    printf("reading graph from file %s\n", &file_name);
+
+    if(!(in = fopen(file_name, "r")))
+    {
+      printf("--> Cannot open file %s; ", &file_name);
+      fflush(NULL);
+      perror("");
+      exit(0);
+    }
+
+    fread(&n, sizeof(int), 1, in);
+    fread(A[0], sizeof(ddtype), n*n, in);
+    fclose(in);
+}
+
+void print2Dgraph(int m, int n, ddtype **A)
+{
+    int i;
+    int k;
+    for(i=0; i<n; i++)
+    {
+        for(k=0; k<n; k++)
+        {
+            printf("%.2f ", &A[i][k]);
+        }
+    }
+}

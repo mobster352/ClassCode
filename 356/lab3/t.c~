@@ -1,0 +1,299 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/time.h>
+
+pthread_t ti1 = 0;
+pthread_t ti2 = 0;
+int stop1 = 0;
+int ready1 = 0;
+int choice1 = 0;
+int choice2 = 0;
+pthread_mutex_t lock1;//start1
+pthread_cond_t cd1;
+pthread_mutex_t lock2;//stop1
+pthread_cond_t cd2;
+pthread_mutex_t lockt1;//tid1
+pthread_cond_t cdt1;
+pthread_mutex_t lock3;//p1
+pthread_cond_t cd3;
+pthread_mutex_t lock4;//p2
+pthread_cond_t cd4;
+
+int randint(int n) {
+  if ((n - 1) == RAND_MAX) {
+    return rand();
+  } else {
+    // Chop off all of the values that would cause skew...
+    long end = RAND_MAX / n; // truncate skew
+
+    end *= n;
+
+    // ... and ignore results from rand() that fall above that limit.
+    // (Worst case the loop condition should succeed 50% of the time,
+    // so we can expect to bail out of this loop pretty quickly.)
+    int r;
+    while ((r = rand()) >= end);
+
+    return r % n;
+  }
+}
+
+void setup(char* argv[])
+{
+    char* a = argv[1];
+    int r = atoi(a);    //converts from char* to int
+    printf("Beginning %d Rounds...\n", r);
+    printf("Fight!\n");
+    printf("------------------------\n");
+}
+
+void nextrd(int rd, char* argv[])
+{
+    int x = atoi(argv[1]);
+    if(rd<x)
+    {
+        printf("Round %d:\n", rd+1);
+    }
+}
+
+void *child1(void* arg) {
+	pthread_mutex_lock(&lockt1);
+	ti1 = pthread_self();
+	pthread_cond_signal(&cdt1);
+	pthread_mutex_unlock(&lockt1);
+
+	struct timeval t1;
+	gettimeofday(&t1,NULL);
+	srand(t1.tv_usec * t1.tv_sec * ti1);
+		
+	pthread_mutex_lock(&lock2);
+	while(stop1!=-1){
+		pthread_mutex_unlock(&lock2);
+
+		pthread_mutex_lock(&lock2);
+		stop1 = 0;
+		pthread_mutex_unlock(&lock2);
+
+		pthread_mutex_lock(&lock1);
+		while(ready1==0)
+			pthread_cond_wait(&cd1,&lock1);
+		pthread_mutex_unlock(&lock1);
+
+		pthread_mutex_lock(&lock3);	
+		choice1 = randint(3);
+		choice1++;
+		pthread_cond_signal(&cd3);
+		pthread_mutex_unlock(&lock3);
+
+		pthread_mutex_lock(&lock1);	
+		ready1 = 0;
+		pthread_mutex_unlock(&lock1);
+
+		pthread_mutex_lock(&lock2);
+		while(stop1==0)
+			pthread_cond_wait(&cd2,&lock2);
+	}
+	pthread_mutex_unlock(&lock2);
+	
+	return NULL;
+}
+
+void *child2(void* arg) {
+	pthread_mutex_lock(&lockt1);
+	ti2 = pthread_self();
+	pthread_cond_signal(&cdt1);
+	pthread_mutex_unlock(&lockt1);
+
+	struct timeval t1;
+	gettimeofday(&t1,NULL);
+	srand(t1.tv_usec * t1.tv_sec * ti2);
+
+	pthread_mutex_lock(&lock2);
+	while(stop1!=-1){
+		pthread_mutex_unlock(&lock2);
+
+		pthread_mutex_lock(&lock2);
+		stop1 = 0;
+		pthread_mutex_unlock(&lock2);
+
+		pthread_mutex_lock(&lock1);
+		while(ready1==0)
+			pthread_cond_wait(&cd1,&lock1);
+		pthread_mutex_unlock(&lock1);
+
+		pthread_mutex_lock(&lock4);	
+		choice2 = randint(3);
+		choice2++;
+		printf("c2: %d\n",choice2);
+		pthread_cond_signal(&cd4);
+		pthread_mutex_unlock(&lock4);
+
+		pthread_mutex_lock(&lock1);	
+		ready1 = 0;
+		pthread_mutex_unlock(&lock1);
+
+		pthread_mutex_lock(&lock2);
+		while(stop1==0)
+			pthread_cond_wait(&cd2,&lock2);
+	}
+	pthread_mutex_unlock(&lock2);
+	
+	return NULL;
+}
+
+int main(int argc, char* argv[]) {
+	int tid1,tid2,x;
+	char* a;
+	int rd = 0;
+	int score1 = 0;
+	int score2 = 0;
+	int ret1 = pthread_mutex_init(&lock1,NULL);
+	int ret2 = pthread_cond_init(&cd1,NULL);
+	int ret3 = pthread_mutex_init(&lock2,NULL);
+	int ret4 = pthread_cond_init(&cd2,NULL);
+	int ret5 = pthread_mutex_init(&lock3,NULL);
+	int ret6 = pthread_cond_init(&cd3,NULL);
+	int ret13 = pthread_mutex_init(&lockt1,NULL);
+	int ret14 = pthread_cond_init(&cdt1,NULL);
+	int ret7 = pthread_mutex_init(&lock4,NULL);
+	int ret8 = pthread_cond_init(&cd4,NULL);
+	
+	pthread_t p;
+	tid1 = pthread_create(&p,NULL,child1,NULL);
+	tid2 = pthread_create(&p,NULL,child2,NULL);
+
+	pthread_mutex_lock(&lockt1);
+	while(ti1==0)
+		pthread_cond_wait(&cdt1,&lockt1);
+	pthread_mutex_unlock(&lockt1);
+	pthread_mutex_lock(&lockt1);
+	while(ti2==0)
+		pthread_cond_wait(&cdt1,&lockt1);
+	pthread_mutex_unlock(&lockt1);
+
+	printf("Child 1 TID: %u\n", (unsigned int)ti1);
+	printf("Child 2 TID: %u\n", (unsigned int)ti2);
+	setup(argv);
+	a = argv[1];
+    	x = atoi(a);
+
+	while(rd<x){
+		pthread_mutex_lock(&lock2);
+		stop1=1;
+		pthread_cond_broadcast(&cd2);
+		pthread_mutex_unlock(&lock2);
+
+		nextrd(rd,argv);
+
+		pthread_mutex_lock(&lock1);
+		ready1 = 1;
+		pthread_cond_broadcast(&cd1);
+		pthread_mutex_unlock(&lock1);		
+
+		pthread_mutex_lock(&lock3);
+		while(choice1==0)
+			pthread_cond_wait(&cd3,&lock3);
+		pthread_mutex_unlock(&lock3);
+
+		pthread_mutex_lock(&lock3);
+		printf("Choice 1: %d\n", choice1);
+		if(choice1==1)
+		{
+		    printf("Child 1 throws Scissors!\n");
+		}
+		else if(choice1==2)
+		{
+		    printf("Child 1 throws Rock!\n");
+		}
+		else if(choice1==3)
+		{
+		    printf("Child 1 throws Paper!\n");
+		}
+		pthread_mutex_unlock(&lock3);	
+
+		pthread_mutex_lock(&lock4);
+		while(choice2==0)
+			pthread_cond_wait(&cd4,&lock4);
+		pthread_mutex_unlock(&lock4);
+		
+		pthread_mutex_lock(&lock4);
+		printf("Choice 2: %d\n", choice2);
+		if(choice2==1)
+		{
+		    printf("Child 2 throws Scissors!\n");
+		}
+		else if(choice2==2)
+		{
+		    printf("Child 2 throws Rock!\n");
+		}
+		else if(choice2==3)
+		{
+		    printf("Child 2 throws Paper!\n");
+		}
+		if(choice1==choice2)
+		{
+		    printf("Draw!\n");
+		}
+		else if(choice1==1 && choice2==3 || choice1==2 && choice2==1 || choice1==3 && choice2==2)
+		{
+		    printf("Child 1 Wins!\n");
+		    score1++;
+		}
+		else if(choice2==1 && choice1==3 || choice2==2 && choice1==1 || choice2==3 && choice1==2)
+		{
+		    printf("Child 2 Wins!\n");
+		    score2++;
+		}
+		pthread_mutex_unlock(&lock4);
+		
+		pthread_mutex_lock(&lock3);	
+		choice1 = 0;
+		pthread_mutex_unlock(&lock3);
+
+		pthread_mutex_lock(&lock4);	
+		choice2 = 0;
+		pthread_mutex_unlock(&lock4);
+
+		printf("------------------------\n");
+		rd++;
+	}
+	printf("------------------------\n");
+	printf("Results:\nChild 1: %d\nChild 2: %d\n", score1, score2);
+
+	if(score1==score2)
+	{
+	    printf("Draw!\n");
+	}
+	else if(score1>score2)
+	{
+	   printf("Child 1 Wins!\n");
+	}
+	else if(score2>score1)
+	{
+	    printf("Child 2 Wins\n");
+	}
+
+	pthread_mutex_lock(&lock2);	
+	stop1 = -1;
+	pthread_cond_broadcast(&cd2);
+	pthread_mutex_unlock(&lock2);
+	
+	pthread_join(tid1,NULL);
+	pthread_join(tid2,NULL);
+
+	pthread_mutex_destroy(&lock1);
+	pthread_mutex_destroy(&lock2);
+	pthread_mutex_destroy(&lock3);
+	pthread_mutex_destroy(&lock4);
+	pthread_mutex_destroy(&lockt1);
+
+	pthread_cond_destroy(&cd1);
+	pthread_cond_destroy(&cd2);
+	pthread_cond_destroy(&cd3);
+	pthread_cond_destroy(&cd4);
+	pthread_cond_destroy(&cdt1);
+
+	return 0;
+}

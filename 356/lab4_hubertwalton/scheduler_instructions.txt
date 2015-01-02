@@ -1,0 +1,2 @@
+It is a C program
+I compiled it with [gcc -o scheduler scheduler.c] in a linux environment

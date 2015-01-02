@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1411360997 source:/home/mob/Documents/CSCI/356/RPS/RPS/rps1.c
+	<stdio.h>
+	<sys/types.h>
+	<stdlib.h>
+	<sys/socket.h>
+	<sys/un.h>
+	<stddef.h>
+	<errno.h>
+	<signal.h>
+	<string.h>
+
+1411365872 source:/home/mob/Documents/CSCI/356/RPS/RPS/rps2.c
+	<stdio.h>
+	<sys/types.h>
+	<stdlib.h>
+	<stddef.h>
+	<errno.h>
+	<signal.h>
+	<string.h>
+

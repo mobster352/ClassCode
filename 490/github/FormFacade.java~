@@ -1,0 +1,344 @@
+package com.cs490;
+import javax.ws.rs.POST;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
+
+import javax.ws.rs.Produces;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import java.util.Arrays;
+import com.google.gson.Gson;
+
+public class FormFacade{
+
+	private static FormFacade singleton;
+	private FormDataAccess dao;
+	
+	//Data Access
+	private FormFacade() throws NamingException, SQLException{
+		this.dao = FormDataAccess.getInstance();
+	}
+	public static FormFacade getInstance()throws NamingException, SQLException{
+		if(singleton == null)
+			singleton = new FormFacade();
+		
+		return singleton;
+	}
+
+	/**Start Course Repeat**/
+	public courseRepeatForm[] getRepeatForms() throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM courserepeat");
+		ResultSet rs = pstmt.executeQuery();
+		
+		courseRepeatForm[] formArray = new courseRepeatForm[100];
+		int index=0;
+		while(rs.next()){	
+			String repeat = rs.getString("repeat");
+			String termtaken = rs.getString("termTaken");
+			String grade = rs.getString("grade");
+			String termrepeat = rs.getString("termRepeat");
+			String studentid = rs.getString("studentId");
+			
+			courseRepeatForm formObject = new courseRepeatForm(repeat,termtaken,grade,termrepeat);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if(index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public courseRepeatForm[] getTermRepeatFormById(int theId)throws SQLException, ClassNotFoundException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement stmt = con.prepareStatement("SELECT * FROM courserepeat WHERE id = ?");
+		stmt.setInt(1,theId);
+		ResultSet rs = stmt.executeQuery();
+		
+		courseRepeatForm[] formArray = new courseRepeatForm[100];
+		int index = 0;
+		
+		while(rs.next()){
+			String repeat = rs.getString("repeat");
+			String termTaken = rs.getString("termTaken");
+			String grade = rs.getString("grade");
+			String termRepeat = rs.getString("termRepeat");
+			
+			
+			courseRepeatForm formObject = new courseRepeatForm(repeat,termTaken,grade,termRepeat);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if( index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return formArray;
+		}
+	}
+	
+	public String createTermToRepeatForm(courseRepeatForm theFormToCreate) throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+	
+		String courseToRepeat = theFormToCreate.getCourseToRepeat();
+		String termTaken = theFormToCreate.getTermTaken();
+		String gradeEarned = theFormToCreate.getGradeEarned();
+		String termToRepeat = theFormToCreate.getTermToRepeat();
+		
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO courserepeat(courseToRepeat,termTaken,gradeEarned,termToRepeat) VALUES (?,?,?,?)");
+		
+		pstmt.setString(1,courseToRepeat);
+		pstmt.setString(2,termTaken);
+		pstmt.setString(3,gradeEarned);
+		pstmt.setString(4,termToRepeat);
+		int res = pstmt.executeUpdate();
+		String answer = "failed";
+		
+		courseRepeatForm[] userArray = new courseRepeatForm[100];
+		int index = 0;
+					
+		if(res == 1){
+			answer = "passed";
+			return answer;
+		}
+		else{
+			return answer;
+		}
+	}
+	/**End Course Repeat **/
+	
+	/**Start Course Sub**/
+	public CourseSubForm[] getSubForms() throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM coursesub");
+		ResultSet rs = pstmt.executeQuery();
+		
+		CourseSubForm[] formArray = new CourseSubForm[100];
+		int index=0;
+		while(rs.next()){	
+			String sourceCourse1 = theFormToCreate.getSourceCourse1();
+			String replacementCourse1 = theFormToCreate.getReplacementCourse1(); 
+			String sourceCourse2 = theFormToCreate.getSourceCourse2();
+			String replacementCourse2 = theFormToCreate.getReplacementCourse2(); 
+			String sourceCourse3 = theFormToCreate.getSourceCourse3();
+			String replacementCourse3 = theFormToCreate.getReplacementCourse3(); 			
+			
+			CourseSubForm formObject = new CourseSubForm(sourceCourse1,replacementCourse1,sourceCourse2,replacementCourse2,sourceCourse3,replacementCourse3);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if(index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public CourseSubForm[] getSubFormById(int theId)throws SQLException, ClassNotFoundException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement stmt = con.prepareStatement("SELECT * FROM coursesub WHERE id = ?");
+		stmt.setInt(1,theId);
+		ResultSet rs = stmt.executeQuery();
+		
+		CourseSubForm[] formArray = new CourseSubForm[100];
+		int index = 0;
+		
+		while(rs.next()){
+			String sourceCourse1 = theFormToCreate.getSourceCourse1();
+			String replacementCourse1 = theFormToCreate.getReplacementCourse1(); 
+			String sourceCourse2 = theFormToCreate.getSourceCourse2();
+			String replacementCourse2 = theFormToCreate.getReplacementCourse2(); 
+			String sourceCourse3 = theFormToCreate.getSourceCourse3();
+			String replacementCourse3 = theFormToCreate.getReplacementCourse3(); 			
+			
+			CourseSubForm formObject = new CourseSubForm(sourceCourse1,replacementCourse1,sourceCourse2,replacementCourse2,sourceCourse3,replacementCourse3);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if( index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return formArray;
+		}
+	}
+	
+	public String createSubForm(CourseSubForm theFormToCreate) throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+	
+		String sourceCourse1 = theFormToCreate.getSourceCourse1();
+		String replacementCourse1 = theFormToCreate.getReplacementCourse1(); 
+		String sourceCourse2 = theFormToCreate.getSourceCourse2();
+		String replacementCourse2 = theFormToCreate.getReplacementCourse2(); 
+		String sourceCourse3 = theFormToCreate.getSourceCourse3();
+		String replacementCourse3 = theFormToCreate.getReplacementCourse3(); 
+		
+		
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO coursesub(sourceCourse1,replacementCourse1,sourceCourse2,replacementCourse2,sourceCourse3,replacementCourse3) VALUES (?,?,?,?,?,?)");
+		
+		pstmt.setString(1,sourceCourse1);
+		pstmt.setString(2,replacementCourse1);
+		pstmt.setString(3,sourceCourse2);
+		pstmt.setString(4,replacementCourse2);
+		pstmt.setString(3,sourceCourse3);
+		pstmt.setString(4,replacementCourse3);
+		
+		int res = pstmt.executeUpdate();
+		String answer = "failed";
+		
+		CourseSubForm[] userArray = new CourseSubForm[100];
+		int index = 0;
+					
+		if(res == 1){
+			answer = "passed";
+			return answer;
+		}
+		else{
+			return answer;
+		}
+	}
+	/**End Sub Form**/
+	
+	/**Start Transcript**/
+	public TranscriptForm[] getTranscriptForms() throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM transcriptform");
+		ResultSet rs = pstmt.executeQuery();
+		
+		TranscriptForm[] formArray = new TranscriptForm[100];
+		int index=0;
+		while(rs.next()){	
+			
+			String firstTermAttended = theFormToCreate.getFirstTermAttended();
+			String firstYearAttended = theFormToCreate.getFirstYearAttended(); 
+			String lastTermAttended = theFormToCreate.getFirstTermAttended();
+			String lastYearAttended = theFormToCreate.getFirstYearAttended();
+			String toBeCompleted = theFormToCreate.getToBeCompleted();
+			
+			String numTrans1 = theFormToCreate.getNumTrans1();
+			String name1 = theFormToCreate.getName1();
+			String address1 = theFormToCreate.getAddress1();
+	
+			Transcript formObject = new TranscriptForm(firstTermAttended,firstYearAttended,lastTermAttended,lastYearAttended,toBeCompleted,numTrans1,name1,address1);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if(index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public TranscriptForm[] getTranscriptFormById(int theId)throws SQLException, ClassNotFoundException{
+		Connection con = dao.getConnection();
+		
+		PreparedStatement stmt = con.prepareStatement("SELECT * FROM transcriptform WHERE id = ?");
+		stmt.setInt(1,theId);
+		ResultSet rs = stmt.executeQuery();
+		
+		TranscriptForm[] formArray = new TranscriptForm[100];
+		int index = 0;
+		
+		while(rs.next()){
+			String firstTermAttended = theFormToCreate.getFirstTermAttended();
+			String firstYearAttended = theFormToCreate.getFirstYearAttended(); 
+			String lastTermAttended = theFormToCreate.getFirstTermAttended();
+			String lastYearAttended = theFormToCreate.getFirstYearAttended();
+			String toBeCompleted = theFormToCreate.getToBeCompleted();
+			
+			String numTrans1 = theFormToCreate.getNumTrans1();
+			String name1 = theFormToCreate.getName1();
+			String address1 = theFormToCreate.getAddress1();
+	
+			Transcript formObject = new TranscriptForm(firstTermAttended,firstYearAttended,lastTermAttended,lastYearAttended,toBeCompleted,numTrans1,name1,address1);
+			
+			formArray[index] = formObject;
+			index++;
+		}
+		if( index > 0){
+			formArray = Arrays.copyOf(formArray,index);
+			return formArray;
+		}
+		else{
+			return formArray;
+		}
+	}
+	
+	public String TranscriptForm(TranscriptForm theFormToCreate) throws SQLException, ClassNotFoundException, NamingException{
+		Connection con = dao.getConnection();
+	
+		String firstTermAttended = theFormToCreate.getFirstTermAttended();
+		String firstYearAttended = theFormToCreate.getFirstYearAttended(); 
+		String lastTermAttended = theFormToCreate.getFirstTermAttended();
+		String lastYearAttended = theFormToCreate.getFirstYearAttended();
+		String toBeCompleted = theFormToCreate.getToBeCompleted();
+		
+		String numTrans1 = theFormToCreate.getNumTrans1();
+		String name1 = theFormToCreate.getName1();
+		String address1 = theFormToCreate.getAddress1();
+	
+			
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO transcriptform(firstTermAttended,firstYearAttended,lastTermAttended,lastYearAttended,toBeCompleted,numTrans1,name1,address1) VALUES (?,?,?,?,?,?,?,?)");
+		
+		pstmt.setString(1,courseToRepeat);
+		pstmt.setString(2,termTaken);
+		pstmt.setString(3,gradeEarned);
+		pstmt.setString(4,termToRepeat);
+		int res = pstmt.executeUpdate();
+		String answer = "failed";
+		
+		TranscriptForm[] userArray = new TranscriptForm[100];
+		int index = 0;
+					
+		if(res == 1){
+			answer = "passed";
+			return answer;
+		}
+		else{
+			return answer;
+		}
+	}
+	/**End Transcript **/
+}

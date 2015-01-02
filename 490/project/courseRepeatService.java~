@@ -1,0 +1,11 @@
+package com.cs490;
+
+@Path("/courserepeat")
+public class courseRepeatService {
+
+	public Student getStudent(){
+		UserFacade userFacade = UserFacade.getInstance();
+		Student stud = userFacade.getStudent(new Student());
+			
+	}
+}

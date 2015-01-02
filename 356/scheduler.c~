@@ -1,0 +1,269 @@
+/*
+Hubert Walton
+CSCI 356
+Lab 4: Scheduler
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct input{
+	int pid;
+	int arrival_time;
+	int cpu_time;
+	bool can_run;
+};
+int main(int argc, char* argv[])
+{
+	struct input jobs[1000];
+	int i = 0;
+	int j = 0;
+	int x,y,z;
+	int time = 0;
+	int total = 0;
+	int totalFinished = 0;
+	bool idle = false;
+	int idle_time = 0;
+	double tat = 0.0;
+	int response = 0; //time of first job finished
+	int t = 0; //total arrived jobs
+	int tt = 0; //time of first job arrival
+	int cptime[1000]; //holds initial cpu_time
+	int wait_time = 0; //summation of start time minus arrival time
+	int q = 0; //quantum counter for rr
+
+	//read from standard input
+	scanf("%d %d %d", &x, &y, &z);
+	jobs[i].pid = x;
+	jobs[i].arrival_time = y;
+	jobs[i].cpu_time = z;
+	jobs[i].can_run = false;
+	cptime[i] = jobs[i].cpu_time;
+	while(jobs[i].pid != 0 || jobs[i].arrival_time != 0 || jobs[i].cpu_time != 0){
+		i++;
+		total++;
+		scanf("%d %d %d", &x, &y, &z);
+		jobs[i].pid = x;
+		jobs[i].arrival_time = y;
+		jobs[i].cpu_time = z;
+		jobs[i].can_run = false;
+		cptime[i] = jobs[i].cpu_time;
+	}
+	//quit if only 0 0 0 is entered
+	if(total==0){perror("no input");exit(0);}
+	i = 0;
+	//sort input based on arrival time
+	while(jobs[i].pid != 0 || jobs[i].arrival_time != 0 || jobs[i].cpu_time != 0){
+		if(i==0)
+			i++;
+		else{
+			for(j=i; j>0; j--){
+				if(jobs[j].arrival_time < jobs[j-1].arrival_time){
+					struct input temp = jobs[j-1];
+					jobs[j-1] = jobs[j];
+					jobs[j] = temp;
+				}
+			}
+			i++;
+		}
+	}
+	
+	/* //print sorted list
+	i = 0;
+	while(jobs[i].pid != 0 || jobs[i].arrival_time != 0 || jobs[i].cpu_time != 0){
+		printf("%d\n", jobs[i].arrival_time);
+		i++;
+	}*/
+
+	//start the fun
+	printf("Simulation starting:\n");
+	if(strcmp(argv[1],"FCFS")==0){
+		while(true){
+			for(i=0;i<total;i++){
+				if(time==jobs[i].arrival_time){
+					printf("%d %d arriving\n", time, jobs[i].pid);
+					jobs[i].can_run = true;
+					t++;
+					if(t==1){
+						tt = time;
+					}
+				}
+			}
+			for(i=0;i<total;i++){
+				if(jobs[i].can_run == true){
+					if(jobs[i].cpu_time==0){
+						printf("%d %d finished\n", time, jobs[i].pid);
+						tat += time;
+						totalFinished++;
+						if(totalFinished==1){
+							response = time;
+						}
+						jobs[i].can_run = false;
+					}
+					else{					
+						printf("%d %d running\n", time, jobs[i].pid);
+						if(jobs[i].cpu_time==cptime[i]){
+							wait_time += time;
+							wait_time -= jobs[i].arrival_time;
+						}
+						jobs[i].cpu_time--;
+						idle = false;
+						break;
+					}
+				}
+				else
+					idle = true;
+			}
+			if(totalFinished==total){
+				break;
+			}
+			if(idle){
+				printf("%d idle\n", time);
+				idle_time++;
+			}
+			time++;
+		}
+	}
+	else if(strcmp(argv[1],"RR")==0){
+	 	char* qtm = argv[2];
+		int quantum = atoi(qtm);
+		
+		while(true){
+			for(i=0;i<total;i++){
+				if(time==jobs[i].arrival_time){
+					printf("%d %d arriving\n", time, jobs[i].pid);
+					jobs[i].can_run = true;
+					t++;
+					if(t==1){
+						tt = time;
+					}
+				}
+			}
+			for(i=0;i<total;i++){
+				if(jobs[i].can_run == true){
+					if(jobs[i].cpu_time==0){
+						printf("%d %d finished\n", time, jobs[i].pid);
+						tat += time;
+						totalFinished++;
+						if(totalFinished==1){
+							response = time;
+						}
+						jobs[i].can_run = false;
+					}
+					else{					
+						printf("%d %d running\n", time, jobs[i].pid);
+						if(jobs[i].cpu_time==cptime[i]){
+							wait_time += time;
+							wait_time -= jobs[i].arrival_time;
+						}
+						jobs[i].cpu_time--;
+						q++;
+						if(q==quantum && jobs[i].cpu_time!=0){
+							for(j=0;j<total-1;j++){
+								struct input temp = jobs[j+1];
+								jobs[j+1] = jobs[j];
+								jobs[j] = temp;
+							}
+							/*if(i==j){
+								for(j=0;j<total;j++){
+									if(jobs[j].can_run==true){
+										struct input temp = jobs[j];
+										jobs[j] = jobs[i];
+										jobs[i] = temp;
+										break;
+									}
+								}
+							}*/
+							
+							q = 0;
+						}
+						idle = false;
+						break;
+					}
+				}
+				else
+					idle = true;
+			}
+			if(totalFinished==total){
+				break;
+			}
+			if(idle){
+				printf("%d idle\n", time);
+				idle_time++;
+			}
+			time++;
+		}
+	}
+	else if(strcmp(argv[1],"SRTF")==0){
+		while(true){
+			for(i=0;i<total;i++){
+				if(time==jobs[i].arrival_time){
+					printf("%d %d arriving\n", time, jobs[i].pid);
+					jobs[i].can_run = true;
+					t++;
+					if(t==1){
+						tt = time;
+					}
+				}
+			}
+			for(i=0;i<total;i++){
+				if(jobs[i].can_run == true){
+					if(jobs[i].cpu_time==0){
+						printf("%d %d finished\n", time, jobs[i].pid);
+						tat += time;
+						totalFinished++;
+						if(totalFinished==1){
+							response = time;
+						}
+						jobs[i].can_run = false;
+					}
+					else{		
+						int min = i;
+						for(j=0;j<total-1;j++){
+							if(jobs[j].can_run==true && jobs[j].cpu_time<jobs[min].cpu_time){
+								min = j;
+							}
+						}	
+						struct input temp = jobs[i];
+						jobs[i] = jobs[min];
+						jobs[min] = temp;		
+						printf("%d %d running\n", time, jobs[min].pid);
+						if(jobs[min].cpu_time==cptime[min]){
+							wait_time += time;
+							wait_time -= jobs[min].arrival_time;
+						}
+						jobs[min].cpu_time--;
+						idle = false;
+						break;
+					}
+				}
+				else
+					idle = true;
+			}
+			if(totalFinished==total){
+				break;
+			}
+			if(idle){
+				printf("%d idle\n", time);
+				idle_time++;
+			}
+			time++;
+		}
+	}
+	else{
+		perror("argv[1] must be FCFS,RR, or SRTF");
+		exit(-1);
+	}
+	
+	double wait = (double)wait_time/(double)total;
+	printf("Average wait time: %.2f\n", wait);
+	int rt = response-tt;
+	printf("Average response time: %d\n", rt);
+	tat = tat/(double)total;
+	printf("Average turnaround time: %.2f\n", tat);
+	double cpu = ((double)idle_time / (double)time) * 100;
+	cpu = 100-cpu;
+	printf("Average CPU usage: %.2f%%\n",cpu);
+
+	exit(0);
+}

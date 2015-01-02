@@ -1,0 +1,292 @@
+<html>
+<head>
+<title>Registration Form</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+	alert("ready");
+	var studid;
+	$.ajax({ 
+		url: "http://localhost8080/formswebapp/resources/user",
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "\n" + "Local address: " + stud.streetAddress
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip
+			+ "\n" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;
+			$("#studentinfo").html(output);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+	$("#submit").click(function(){
+		var year = document.getElementById("year").value;
+		var term = $("input[name=term]:checked").val();
+		//reg table
+		var reg1 = document.getElementById("reg1").value;
+		var reg2 = document.getElementById("reg2").value;
+		var reg3 = document.getElementById("reg3").value;
+		var reg4 = document.getElementById("reg4").value;
+		var reg5 = document.getElementById("reg5").value;
+		var reg6 = document.getElementById("reg6").value;
+		var dept1 = document.getElementById("dept1").value;
+		var dept2 = document.getElementById("dept2").value;
+		var dept3 = document.getElementById("dept3").value;
+		var dept4 = document.getElementById("dept4").value;
+		var dept5 = document.getElementById("dept5").value;
+		var dept6 = document.getElementById("dept6").value;
+		var course1 = document.getElementById("course1").value;
+		var course2 = document.getElementById("course2").value;
+		var course3 = document.getElementById("course3").value;
+		var course4 = document.getElementById("course4").value;
+		var course5 = document.getElementById("course5").value;
+		var course6 = document.getElementById("course6").value;
+		var section1 = document.getElementById("section1").value;
+		var section2 = document.getElementById("section2").value;
+		var section3 = document.getElementById("section3").value;
+		var section4 = document.getElementById("section4").value;
+		var section5 = document.getElementById("section5").value;
+		var section6 = document.getElementById("section6").value;
+		var credit1 = document.getElementById("credit1").value;
+		var credit2 = document.getElementById("credit2").value;
+		var credit3 = document.getElementById("credit3").value;
+		var credit4 = document.getElementById("credit4").value;
+		var credit5 = document.getElementById("credit5").value;
+		var credit6 = document.getElementById("credit6").value;
+		var time1 = document.getElementById("time1").value;
+		var time2 = document.getElementById("time2").value;
+		var time3 = document.getElementById("time3").value;
+		var time4 = document.getElementById("time4").value;
+		var time5 = document.getElementById("time5").value;
+		var time6 = document.getElementById("time6").value;
+		//alt table
+		var reg1 = document.getElementById("reg11").value;
+		var reg2 = document.getElementById("reg12").value;
+		var reg3 = document.getElementById("reg13").value;
+		var reg4 = document.getElementById("reg14").value;
+		var reg5 = document.getElementById("reg15").value;
+		var reg6 = document.getElementById("reg16").value;
+		var dept1 = document.getElementById("dept11").value;
+		var dept2 = document.getElementById("dept12").value;
+		var dept3 = document.getElementById("dept13").value;
+		var dept4 = document.getElementById("dept14").value;
+		var dept5 = document.getElementById("dept15").value;
+		var dept6 = document.getElementById("dept16").value;
+		var course1 = document.getElementById("course11").value;
+		var course2 = document.getElementById("course12").value;
+		var course3 = document.getElementById("course13").value;
+		var course4 = document.getElementById("course14").value;
+		var course5 = document.getElementById("course15").value;
+		var course6 = document.getElementById("course16").value;
+		var section1 = document.getElementById("section11").value;
+		var section2 = document.getElementById("section12").value;
+		var section3 = document.getElementById("section13").value;
+		var section4 = document.getElementById("section14").value;
+		var section5 = document.getElementById("section15").value;
+		var section6 = document.getElementById("section16").value;
+		var credit1 = document.getElementById("credit11").value;
+		var credit2 = document.getElementById("credit12").value;
+		var credit3 = document.getElementById("credit13").value;
+		var credit4 = document.getElementById("credit14").value;
+		var credit5 = document.getElementById("credit15").value;
+		var credit6 = document.getElementById("credit16").value;
+		var time1 = document.getElementById("time11").value;
+		var time2 = document.getElementById("time12").value;
+		var time3 = document.getElementById("time13").value;
+		var time4 = document.getElementById("time14").value;
+		var time5 = document.getElementById("time15").value;
+		var time6 = document.getElementById("time16").value;
+
+		var theUrl = "http://localhost:8080/formswebapp/resources/registration";
+		var theData = "year="+year+"&"+"term="+term+"&"
+		+"reg1="+reg1+"&"+"reg2="+reg2+"&"+"reg3="+reg3+"&"+"reg4="+reg4+"&"+"reg5="+reg5+"&"+"reg6="+"&"
+		+"dept1="+dept1+"&"+"dept2="+dept2+"&"+"dept3="+dept3+"&"+"dept4="+dept4+"&"+"dept5="+dept5+"&"+"dept6="+dept6+"&"
+		+"course1="+course1+"&"+"course2="+course2+"&"+"course3="+course3+"&"+"course4="+course4+"&"+"course5="+course5+"&"+"course6="+course6+"&"
+		+"section1="+section1+"&"+"section2="+section2+"&"+"section3="+section3+"&"+"section4="+section4+"&"
+		+"section5="+section5+"&"+"section6="+section6+"&"+"credit1="+credit1+"&"+"credit2="+credit2+"&"
+		+"credit3="+credit3+"&"+"credit4="+credit4+"&"+"credit5="+credit5+"&"+"credit6="+credit6+"&"
+		+"time1="+time1+"&"+"time2="+time2+"&"+"time3="+time3+"&"+"time4="+time4+"&"+"time5="+time5+"&"+"time6="+time6+"&"
+		
+		+"reg11="+reg11+"&"+"reg12="+reg12+"&"+"reg13="+reg13+"&"+"reg14="+reg14+"&"+"reg15="+reg15+"&"+"reg16="+"&"
+		+"dept11="+dept11+"&"+"dept12="+dept12+"&"+"dept13="+dept13+"&"+"dept14="+dept14+"&"+"dept15="+dept15+"&"+"dept16="+dept16+"&"
+		+"course11="+course11+"&"+"course12="+course12+"&"+"course13="+course13+"&"+"course14="+course14+"&"+"course15="+course15+"&"+"course16="+course16+"&"
+		+"section11="+section11+"&"+"section12="+section12+"&"+"section13="+section13+"&"+"section14="+section14+"&"
+		+"section15="+section15+"&"+"section16="+section16+"&"+"credit11="+credit11+"&"+"credit12="+credit12+"&"
+		+"credit13="+credit13+"&"+"credit14="+credit14+"&"+"credit15="+credit15+"&"+"credit16="+credit16+"&"
+		+"time11="+time11+"&"+"time12="+time12+"&"+"time13="+time13+"&"+"time14="+time14+"&"+"time15="+time15+"&"+"time16="+time16;
+
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			datatype: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+		});
+	});
+});
+</script>
+</head>
+<body>
+	<h2>Registration Form</h2>
+	<br>
+	Year <input type="text" id="year" value="">
+	Term: 
+	<input type="radio" name="term" value="1">Spring
+	<input type="radio" name="term" value="2">May Semester
+	<input type="radio" name="term" value="3">Summer I (or Summer 8-week)
+	<input type="radio" name="term" value="4">Summer II
+	<input type="radio" name="term" value="5">Fall<br>
+	<div id="studentinfo"></div>
+	<p>Recommended Courses: Student's first choice for registration</p>
+	<p>Approved Alternatives: Course(s) that will satisfy the student's degree requirements if the Recommended Course(s) is/are not available.</p>
+	<p>Approved Alternatives are not required for registration of Recommended Courses.</p>
+	<p>Reg Action = Add,Drop,Audit</p>
+	<table border="1">
+		<tr>
+			<th>Recommended Courses</th>
+			<th>Approved Alternatives</th>
+		</tr>
+		<tr>
+			<td>
+			<table border="1">
+				<tr>
+					<th>Reg Action</th>
+					<th>Department</th>
+					<th>Course</th>
+					<th>Section</th>
+					<th>Credit</th>
+					<th>Day/Time</th>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg1" value=""></td>
+					<td><input type="text" id="dept1" value=""></td>
+					<td><input type="text" id="course1" value=""></td>
+					<td><input type="text" id="section1" value=""></td>
+					<td><input type="text" id="credit1" value=""></td> 
+					<td><input type="text" id="time1" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg2" value=""></td>
+					<td><input type="text" id="dept2" value=""></td>
+					<td><input type="text" id="course2" value=""></td>
+					<td><input type="text" id="section2" value=""></td>
+					<td><input type="text" id="credit2" value=""></td> 
+					<td><input type="text" id="time2" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg3" value=""></td>
+					<td><input type="text" id="dept3" value=""></td>
+					<td><input type="text" id="course3" value=""></td>
+					<td><input type="text" id="section3" value=""></td>
+					<td><input type="text" id="credit3" value=""></td> 
+					<td><input type="text" id="time3" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg4" value=""></td>
+					<td><input type="text" id="dept4" value=""></td>
+					<td><input type="text" id="course4" value=""></td>
+					<td><input type="text" id="section4" value=""></td>
+					<td><input type="text" id="credit4" value=""></td> 
+					<td><input type="text" id="time4" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg5" value=""></td>
+					<td><input type="text" id="dept5" value=""></td>
+					<td><input type="text" id="course5" value=""></td>
+					<td><input type="text" id="section5" value=""></td>
+					<td><input type="text" id="credit5" value=""></td> 
+					<td><input type="text" id="time5" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg6" value=""></td>
+					<td><input type="text" id="dept6" value=""></td>
+					<td><input type="text" id="course6" value=""></td>
+					<td><input type="text" id="section6" value=""></td>
+					<td><input type="text" id="credit6" value=""></td> 
+					<td><input type="text" id="time6" value=""></td>
+				</tr>
+			</table>
+			</td>
+			<td>
+			<table border="1">
+				<tr>
+					<th>Reg Action</th>
+					<th>Department</th>
+					<th>Course</th>
+					<th>Section</th>
+					<th>Credit</th>
+					<th>Day/Time</th>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg11" value=""></td>
+					<td><input type="text" id="dept11" value=""></td>
+					<td><input type="text" id="course11" value=""></td>
+					<td><input type="text" id="section11" value=""></td>
+					<td><input type="text" id="credit11" value=""></td> 
+					<td><input type="text" id="time11" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg12" value=""></td>
+					<td><input type="text" id="dept12" value=""></td>
+					<td><input type="text" id="course12" value=""></td>
+					<td><input type="text" id="section12" value=""></td>
+					<td><input type="text" id="credit12" value=""></td> 
+					<td><input type="text" id="time12" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg13" value=""></td>
+					<td><input type="text" id="dept13" value=""></td>
+					<td><input type="text" id="course13" value=""></td>
+					<td><input type="text" id="section13" value=""></td>
+					<td><input type="text" id="credit13" value=""></td> 
+					<td><input type="text" id="time13" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg14" value=""></td>
+					<td><input type="text" id="dept14" value=""></td>
+					<td><input type="text" id="course14" value=""></td>
+					<td><input type="text" id="section14" value=""></td>
+					<td><input type="text" id="credit14" value=""></td> 
+					<td><input type="text" id="time14" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg15" value=""></td>
+					<td><input type="text" id="dept15" value=""></td>
+					<td><input type="text" id="course15" value=""></td>
+					<td><input type="text" id="section15" value=""></td>
+					<td><input type="text" id="credit15" value=""></td> 
+					<td><input type="text" id="time15" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="text" id="reg16" value=""></td>
+					<td><input type="text" id="dept16" value=""></td>
+					<td><input type="text" id="course16" value=""></td>
+					<td><input type="text" id="section16" value=""></td>
+					<td><input type="text" id="credit16" value=""></td> 
+					<td><input type="text" id="time16" value=""></td>
+				</tr>
+			</table>
+			</td>
+		</tr>
+	</table>
+	<br><button type="button" id="submit">Submit</button>
+</body>
+</html>

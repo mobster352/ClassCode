@@ -1,0 +1,57 @@
+# depslib dependency file v1.0
+1396595120 source:c:\users\jr\documents\coastal\csci\310\hubert_walton_hw03\matrix\matrix.c
+
+1396603237 source:c:\users\jr\documents\coastal\csci\310\hubert_walton_hw03\matrix\make-matrix.c
+	<stdio.h>
+
+1396603237 
+
+1398609318 source:/home/mob/Documents/CSCI/310/Hubert_Walton_HW03/Matrix/make-matrix.c
+	<stdio.h>
+	"matrix.h"
+	<unistd.h>
+	<stdlib.h>
+
+1398609288 /home/mob/Documents/CSCI/310/Hubert_Walton_HW03/Matrix/matrix.h
+
+1398690018 source:/home/mob/Documents/CSCI/310/Hubert_Walton_HW03/Matrix/matrix.c
+	"matrix.h"
+	<stdio.h>
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
+
+1398609295 source:/home/mob/Documents/CSCI/310/Hubert_Walton_HW03/Matrix/print-matrix.c
+	"matrix.h"
+	<stdio.h>
+	<unistd.h>
+
+1398690062 source:/home/mob/Documents/CSCI/310/Hubert_Walton_HW03/Matrix/mm-serial.c
+	"matrix.h"
+	<stdio.h>
+	<unistd.h>
+	<time.h>
+
+1409689120 source:/home/mob/Documents/CSCI/356/cp/mystack.c
+	"mystack.h"
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+
+1408915041 /home/mob/Documents/CSCI/356/cp/mystack.h
+
+1409689226 source:/home/mob/Documents/CSCI/356/cp/student.c
+	"student.h"
+	"mystack.h"
+	"mystack.c"
+	<stdio.h>
+	<stdlib.h>
+
+1408915053 /home/mob/Documents/CSCI/356/cp/student.h
+
+1409689120 /home/mob/Documents/CSCI/356/cp/mystack.c
+	"mystack.h"
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+

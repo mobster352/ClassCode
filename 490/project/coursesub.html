@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Course Substitution Request</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+	alert("ready");
+	var studid;
+
+
+	$.ajax({ 
+		url: "http://localhost8080/formswebapp/resources/user",
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "\n" + "Local address: " + stud.streetAddress
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip;
+			+ "\n" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;
+			studid = stud.id;
+			$("#studentinfo").html(output);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+
+	$("#submit").click(function(){
+		var sourceCourse1 = document.getElementById("sourceCourse1").value;
+		var replacementCourse1 = document.getElementById("replacementCourse1").value;
+		var sourceCourse2 = document.getElementById("sourceCourse2").value;
+		var replacementCourse2 = document.getElementById("replacementCourse2").value;
+		var sourceCourse3 = document.getElementById("sourceCourse3").value;
+		var replacementCourse3 = document.getElementById("replacementCourse3").value;
+
+		var theUrl = "http://localhost:8080/formswebapp/resources/coursesub";
+
+		var theData = "sourceCourse1="+sourceCourse1+"&"+"replacementCourse1="+replacementCourse1+"&"
+			+"sourceCourse2="+sourceCourse2+"&"+"replacementCourse2="+replacementCourse2+"&"
+			+"sourceCourse3="+sourceCourse3+"&"+"replacementCourse3="+replacementCourse3;
+	
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			datatype: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+		});
+	});
+});
+</script>
+</head>
+<body>
+	<h2>Course Substitutions Within the Major or Minor</h2>
+	<br>
+	<label>Student Information:</label>
+	<div id="studentinfo"></div>
+	<p>Substitute <input type="text" id="sourceCourse1" value=""> for the requirement of <input type="text" id="replacementCourse1" value=""></p>
+	<p>Substitute <input type="text" id="sourceCourse2" value=""> for the requirement of <input type="text" id="replacementCourse2" value=""></p>
+	<p>Substitute <input type="text" id="sourceCourse3" value=""> for the requirement of <input type="text" id="replacementCourse3" value=""></p>
+	<br><button type="button" id="submit">Submit</button>
+</body>
+</html>

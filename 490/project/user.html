@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>User Login</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+
+$(document).ready( function() {
+alert("running script");
+
+$("#btnCreateUser").click(function() {
+	alert("clicked");
+	var newUserName=document.getElementById("t_userName").value;
+	var newUserPassword=document.getElementById("t_userPassword").value;
+	
+	var theData="newName=" +newUserName+ "&" +"newPassword=" +newUserPassword;
+	
+	alert("Sending: "+theData);
+	var theUrl = "http://localhost:8080/formswebapp/resources/user";
+	$.ajax( {
+		url: theUrl,
+		type: "POST",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: 
+		function(result,status,jqxhr) 
+		{
+			alert("success: "+status);
+			
+			var userArray = JSON.parse(result);
+			alert(userArray);
+			var output="<h3>Just added a new User</h3>";
+			output += "<ul>"
+			for(var i=0; i<userArray.length;i++)
+			{
+				output += "<li>"+"User: "+userArray[i].userName +" , Password: "+ userArray[i].userPassword+ "</li>";
+			}
+			output += "</ul>";
+			alert(output);
+			$("#p_createUser").html(output); 
+		},
+		error:
+		function(xhr, status, errorThrown) {
+			alert("error: "+status+" e: "+errorThrown);
+			$("#p_createUser").html("Error:"+xhr.status+" "+xhr.statusText);}
+	});
+});
+
+$("#updateBtn").click(function() {
+alert("clicked");
+	var userName = document.getElementById("updateName").value;
+	var userPass = document.getElementById("updatePass").value;
+	var Id = document.getElementById("userId").value;
+	var theData = "username="+userName+"&"+"password="+userPass;
+	
+	alert("Sending: "+theData);
+	$.ajax( {
+		url: "http://localhost:8080/formswebapp/resources/user/"+Id,
+		type: "PUT",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr){
+			alert("success: "+status);
+			var userArray = JSON.parse(result);
+			alert(userArray);
+			var output="<h3>Updated User</h3>";
+			output += "<ul>"
+			for(var i=0; i<userArray.length;i++)
+			{
+				output += "<li>"+"Id updated: "+userArray[i].id+"</li>";
+			}
+			output += "</ul>";
+			alert(output);
+			$("#p_updateUser").html(output); },	
+			
+		error: 
+			function(xhr,status,errorThrown) {
+			alert("error: "+status+" e: "+errorThrown);
+			}
+	});
+});
+
+$("#btnSearchUser").click(function() {
+	alert("clicked");
+	var uId=document.getElementById("t_uId").value;
+	var uName=document.getElementById("t_uName").value;
+	
+	var theUrl ="http://localhost:8080/formswebapp/resources/user/theuser?uId="+uId+"&uName="+uName;
+				 
+	$.ajax( {
+		url: theUrl,
+		type: "GET",
+		dataType: "text",
+		success: function(result) {
+			alert("success");
+			var userArray = JSON.parse(result);
+			alert(userArray);
+			var output="<h3>User By Id & Name</h3>";
+			output += "<ul>"
+			for(var i=0; i<userArray.length;i++)
+			{
+				output += "<li>"+"Id: "+userArray[i].id +" , Name: "+ userArray[i].userName+ "</li>";
+			}
+			output += "</ul>";
+			alert(output);
+			$("#p_searchUser").html(output); },
+		error:function(xhr) {
+			alert("error");
+			$("#p_searchForm").html("Error:"+xhr.status+" "+xhr.statusText);}
+	});
+});
+
+$("#btnDeleteUser").click(function() {
+	alert("clicked");
+	var userId2 = document.getElementById("t_userId2").value;
+	var theData = "userId="+userId2;
+	
+	alert("Sending: "+theData);
+	$.ajax( {
+		url: "http://localhost:8080/formswebapp/resources/user/"+userId2,
+		type: "DELETE",
+		dataType: "text",
+		data: theData,
+		
+		success: function(result,status,jqxhr){
+			alert("success: "+status);
+			var userArray = JSON.parse(result);
+			alert(userArray);
+			var output="<h3>A User was Deleted!</h3>";
+			output += "<ul>"
+			output += "<li>"+"User "+userId2+ " deleted:</li>";
+			output += "</ul>";
+			alert(output);
+			$("#p_deleteUser").html(output); },	
+			
+			},
+		error: 
+			function(xhr,status,errorThrown) {
+			alert("error: "+status+" e: "+errorThrown);
+			}
+		
+	});
+});
+
+});
+</script>
+</head>
+<body>
+
+<div id="createUser">
+	<h4> Create New User </h4>
+		<label for="t_userNameCreate">Name: </label>
+		<input type="text" id="t_userName" value="type username here" /><br>
+		
+		<label for="t_userPasswordCreate">Password: </label>
+		<input type="text" id="t_userPassword" value="type password here" /><br>
+		<button id="btnCreateUser">Click to create user</button>
+		<p id="p_createUser"> Created User Goes Here</p>
+		<br>
+		<hr>
+</div>
+<div id="updateUser">
+	<h4> Update User </h4>
+		<form id="updateUser">
+		Enter User Id: <input type="text" id="userId" value="1">
+		Update Username: <input type="text" id="updateName" value="">
+		Update Password: <input type="password" id="updatePass" value="">
+		<button type="button" id="updateBtn">Update User</button>
+		<p id="p_updateUser"> Updated Information goes here</p>
+		</form>
+		<hr>
+</div>
+<div id="searchUser">
+	<h4> Retrieve User</h4>
+		<label for="t_uId">User Id: </label>
+		<input type="text" id="t_uId" value="type user id here"/>
+		<label for="t_uName">User Name: </label>
+		<input type="text" id="t_uName" value="type name here"/>
+		<button id="btnSearchUser">Click to retrieve by Id & Name</button>
+		
+	<p id="p_searchUser"> User by Id & Name Goes Here</p>
+	<hr>
+</div>
+<div id="deleteUser">
+	<h4> Delete User</h4>
+		<label for="t_userId2">User Id: </label>
+		<input type="text" id="t_userId2" value="type user id here"/>
+		<button id="btnDeleteUser">Click to delete user by Id</button>
+	<p id="p_deleteUser"> User Deleted Goes Here</p>	
+</div>
+
+</body>
+</html>

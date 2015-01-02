@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>Transcript Request</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+	alert("ready");
+	var mailnum = 1;
+	var studid;
+
+
+	$.ajax({ 
+		url: "http://localhost8080/formswebapp/resources/user",
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "\n" + "Local address: " + stud.streetAddress
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip
+			+ "\n" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;
+			studid = stud.id;
+			$("#studentinfo").html(output);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+	$("#add").click(function(){
+		if(mailnum==3){
+			alert("mail full");
+			return;
+		}
+		mailnum = mailnum + 1;
+		$("#mailto2").append("Number of transcripts to be sent <input type='text' id='numtrans' value=''><br>");
+		$("#numtrans").set();
+		$("#mailto2").append("Name <input type='text' id='name' value=''><br>");
+		$("#name").set()
+		$("#mailto2").append("Address <input type='text' id='address' value=''><br>");
+		$("#address").set()
+		alert("mailnum: "+mailnum);
+	});
+
+	$.fn.set = function(){
+		return this.each(function(){
+			$(this).attr('id',this.id+mailnum);
+		});
+	};
+	
+	$("#remove").click(function(){
+		$("#mailto2").replaceWith("<div id='mailto2'></div>");
+		mailnum = 1;
+		alert("mailnum: "+mailnum);
+	});
+
+	$("#submit").click(function(){
+		var firstterm = $("input[name=firstterm]:checked").val();
+		var lastterm = $("input[name=lastterm]:checked").val();
+		var toBeCompleted = document.getElementById("toBeCompleted").value;
+		var yearfirst = document.getElementById("yearfirst").value;
+		var yearlast = document.getElementById("yearlast").value;
+		
+		var theUrl = "http://localhost:8080/formswebapp/resources/transcript";
+
+		var theData = "firstTermAttended="+firstterm+"&"+"lastTermAttended="+lastterm+"&"+"toBeCompleted="+toBeCompleted
+				+"&"+"firstYearAttended="+yearfirst+"&"+"lastYearAttended="+yearlast+"&";
+
+		for(var i=1; i<= mailnum; i++){
+			var numtrans = document.getElementById("numtrans"+i).value;
+			var name = document.getElementById("name"+i).value;
+			var address = document.getElementById("address"+i).value;
+			if(i==1)
+				theData += "numtrans1="+numtrans+"&"+"name1="+name+"&"+"address1="+address;
+			if(i==2)
+				theData += "numtrans2="+numtrans+"&"+"name2="+name+"&"+"address2="+address;
+			if(i==3)
+				theData += "numtrans3="+numtrans+"&"+"name3="+name+"&"+"address3="+address;
+		}	
+
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			datatype: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}1
+		});
+	});
+
+});
+</script>
+</head>
+<body>
+	<h2>Transcript Request Form</h2>
+	<br>
+	<p>Coastal Carolina University will issue up to six standard service transcripts per student per calendar year at no charge. A non-refundable fee of $5.00 per copy must accompany subsequent requests that are made within the same calendar year. Please make your check or money order payable to Coastal Carolina University at the Office of Student Accounts located at 100 East Chanticleer Drive (Baxley Hall). Enhanced service official transcripts may be ordered for additional charges - please see the Office of the Registrar's website for details.<p>
+	<label>NOTE:</label>
+	<p>If you have a hold your account wiht the University, it may prevent this transcript request from being processed. The submitted request form will remain valid only for a period of thirty days, in order to allow you to clear the hold that prevents processing.</p>
+	<p>Transcript(s) will not be released to/for anyone except students, unless appropriately requested in writing by the student. Please present a picture identification when requesting transcripts in person.</p>
+	<br>
+	<label>Student Information:</label>
+	<div id="studentinfo"></div>
+	<hr>
+	<label>Processing dates:</label>(check all that apply)
+	<br>
+	Date/Term work to be completed <input type="text" id="toBeCompleted" value=""><br>
+	First term attended: Year <input type="text" id="yearfirst" value="">
+	<input type="radio" name="firstterm" value="1">Fall
+	<input type="radio" name="firstterm" value="2">Spring
+	<input type="radio" name="firstterm" value="3">May
+	<input type="radio" name="firstterm" value="4">Summer I
+	<input type="radio" name="firstterm" value="5">Summer II<br>
+	Last term attended: Year <input type="text" id="yearlast" value="">
+	<input type="radio" name="lastterm" value="1">Fall
+	<input type="radio" name="lastterm" value="2">Spring
+	<input type="radio" name="lastterm" value="3">May
+	<input type="radio" name="lastterm" value="4">Summer I
+	<input type="radio" name="lastterm" value="5">Summer II<br>
+	<p>If you attended before July 1, 1993, please contact the University of South Carolina at 803-777-5555.</p>
+	<hr>
+	<label>Mail transcripts to: (max 5)</label><br>
+	<div id="mailto">
+		Number of transcripts to be sent <input type="text" id="numtrans1" value=""><br>
+		Name <input type="text" id="name1" value=""><br>
+		Address <input type="text" id="address1" value=""><br>	
+	</div>
+	<div id="mailto2"></div>
+	<button type="button" id="add">Click to add a recipient</button>
+	<br>
+	<button type="button" id="remove">Click to reset recipient list</button>
+	<br>
+	<button type="button" id="submit">Submit</button>
+</body>
+</html>

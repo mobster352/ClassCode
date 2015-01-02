@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>Course Repeat Request</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+	$.ajax({ 
+		url: "http://localhost8080/formswebapp/resources/user",
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr) {
+			var stud = JSON.parse(result);
+			var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.tele 
+			+ "\n" + "Local address: " + stud.address
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip;
+			$("#studentinfo").html(output);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+
+	$("#submit").click(function(){
+		var choice = $("input[name=choice]:checked").val();
+		var term = $("input[name=term]:checked").val();
+		var iName = document.getElementById("iName").value;
+		var iCode = document.getElementById("iCode").value;
+		var iAddress = document.getElementById("iAddress").value;
+		var iCity = document.getElementById("iCity").value;
+		var iState = document.getElementById("iState").value;
+		var iZip = document.getElementById("iZip").value;
+		
+		var dept1 = document.getElementById("dept1").value;
+		var course1 = document.getElementById("course1").value;
+		var credit1 = document.getElementById("credit1").value;
+		var title1 = document.getElementById("title1").value;
+		var equ1 = document.getElementById("equ1").value;
+
+		var dept2 = document.getElementById("dept2").value;
+		var course2 = document.getElementById("course2").value;
+		var credit2 = document.getElementById("credit2").value;
+		var title2 = document.getElementById("title2").value;
+		var equ2 = document.getElementById("equ2").value;
+
+		var dept3 = document.getElementById("dept3").value;
+		var course3 = document.getElementById("course3").value;
+		var credit3 = document.getElementById("credit3").value;
+		var title3 = document.getElementById("title3").value;
+		var equ3 = document.getElementById("equ3").value;
+
+		var dept4 = document.getElementById("dept4").value;
+		var course4 = document.getElementById("course4").value;
+		var credit4 = document.getElementById("credit4").value;
+		var title4 = document.getElementById("title4").value;
+		var equ4 = document.getElementById("equ4").value;
+
+		var dept5 = document.getElementById("dept5").value;
+		var course5 = document.getElementById("course5").value;
+		var credit5 = document.getElementById("credit5").value;
+		var title5 = document.getElementById("title5").value;
+		var equ5 = document.getElementById("equ5").value;
+
+		var dept6 = document.getElementById("dept6").value;
+		var course6 = document.getElementById("course6").value;
+		var credit6 = document.getElementById("credit6").value;
+		var title6 = document.getElementById("title6").value;
+		var equ6 = document.getElementById("equ6").value;
+
+		var theData = "choice="+choice+"&"+"term="+term+"&"+"iName="+iName+"&"+"iCode="+iCode+"&"+"iAddress="+iAddress+"&"
+				+"iCity="+iCity+"&"+"iState="+iState+"&"+"iZip="+iZip+"&"+"dept1="+dept1+"&"+"course1="+course1+"&"
+				+"credit1="+credit1+"&"+"title1="+title1+"&"+"equ1="+equ1+"&"+"dept2="+dept2+"&"+"course2="+course2+"&"
+				+"credit2="+credit2+"&"+"title2="+title2+"&"+"equ2="+equ2+"&"+"dept3="+dept3+"&"+"course3="+course3+"&"
+				+"credit3="+credit3+"&"+"title3="+title3+"&"+"equ3="+equ3+"&"+"dept4="+dept4+"&"+"course4="+course4+"&"
+				+"credit4="+credit4+"&"+"title4="+title4+"&"+"equ4="+equ4+"&"+"dept5="+dept5+"&"+"course5="+course5+"&"
+				+"credit5="+credit5+"&"+"title5="+title5+"&"+"equ5="+equ5+"&"+"dept6="+dept6+"&"+"course6="+course6+"&"
+				+"credit6="+credit6+"&"+"title6="+title6+"&"+"equ6="+equ6;
+		var theUrl = "http://localhost:8080/formswebapp/resources/specialenrollment";
+		
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+		
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+	});
+
+});
+</script>
+</head>
+<body>
+	<h2>Special Enrollment Request</h2>
+	<br>
+	<label>General Information</label>
+	<ul>
+		<li>The Special Enrollment Request form is used whenever a Coastal Carolina University student plans to take coursework at an external institution.</li>
+		<li>The student, in conjunction with his/her major's academic department, completes the Special Enrollment Request form prior to taking the coursework. This form ensures that the student and the academic department agree that the coursework will be transferable back to the student's degree program at Coastal Carolina University.</li>
+		<li>Seniors (students with more than 90 credit hours) must also submit a general petition form waiving the 90 hour residence requirement. Please submit these forms together for accurate and timely processing. Neglecting to do so could result in delayed processing.</li>
+	</ul>
+	<br>
+	<label>Instructions</label>
+	<ul>
+		<li>This package contains both the Special Enrollment Form (to complete at Coastal Carolina University) and a Transcript Request Form (to submit to the external institution's Registrar's Office.)</li>
+	</ul>
+	<label>Important Notice</label>
+	<br>
+	<p>Students who are currently awarded any S.C. Lottery Scholarship Funds, or will receive any in the future, are REQUIRED to provide an official transcript for all coursework taken at external institutions.</p>
+	<p>Lottery Scholarship Funds will not be disbursed until your transcript is received.</p>
+	<hr>
+	<label>Student Information:</label>
+	<div id="studentinfo"></div>
+	<br>
+	<label>Please Read:</label>
+	<ul>
+		<li>All course credit beyond 90 credit hours must be earned "in residence" at Coastal Carolina University.</li>
+		<li>If taking courses at another university after earning 90 hours, a General Petition waiving the 90 hour residence requirement must be submitted. Please submit these forms together for accurate and timely processing. Neglecting to do so could result in delayed processing.</li>
+		<li>Upon completion of course work, the student must request an official transcript be forwarded to the Office of the Registrar, Coastal Carolina University, P.O. Box 261954, Conway, SC 29528-6054.</li>
+		<li>S.C. Lottery Scholarship funds will not be disbursed until all official transcripts from external institutions have been received.</li>
+	</ul>
+	<label>Select one of the following:</label>
+	<input type="radio" name="choice" value="1">Transient study at another college or University<br>
+	<input type="radio" name="choice" value="2">Concurrent enrollment at Coastal Carolina University and another college or university<br>
+	<input type="radio" name="choice" value="3">Study abroad program through the National Student Exchange Program<br>
+	<input type="radio" name="choice" value="4">Study abroad program through Coastal Carolina University<br>
+	<hr>
+	<label>Term/Year of attendance:</label>
+	<input type="radio" name="term" value="1">Fall
+	<input type="radio" name="term" value="2">Spring
+	<input type="radio" name="term" value="3">Summer I
+	<input type="radio" name="term" value="4">Summer II
+	Year <input type="text" id="year" value="">
+	<br>
+	Institution attending <input type="text" id="iName" value="">
+	CEEB Code <input type="text" id="iCode" value="">
+	<br>
+	Address (Street/P.O. Box) <input type="text" id="iAddress" value="">
+	<br>
+	City <input type="text" id="iCity" value="">
+	State <input type="text" id="iState" value="">
+	Zip code <input type="text" id="iZip" value="">
+	<br>
+	<label>COURSES TO BE TAKEN:</label>
+	<tabel>
+		<tr>
+			<th>Department</th>
+			<th>Course</th>
+			<th>Credit Hours</th>
+			<th>Title</th>
+			<th>CCU Equivalent Course</th>
+		</tr>
+		<tr>
+			<td><input type="text" id="dept1" value=""></td>
+			<td><input type="text" id="course1" value=""></td>
+			<td><input type="text" id="credit1" value=""></td>
+			<td><input type="text" id="title1" value=""></td>
+			<td><input type="text" id="equ1" value=""></td> 
+		</tr>
+		<tr>
+			<td><input type="text" id="dept2" value=""></td>
+			<td><input type="text" id="course2" value=""></td>
+			<td><input type="text" id="credit2" value=""></td>
+			<td><input type="text" id="title2" value=""></td>
+			<td><input type="text" id="equ2" value=""></td> 
+		</tr>
+		<tr>
+			<td><input type="text" id="dept3" value=""></td>
+			<td><input type="text" id="course3" value=""></td>
+			<td><input type="text" id="credit3" value=""></td>
+			<td><input type="text" id="title3" value=""></td>
+			<td><input type="text" id="equ3" value=""></td> 
+		</tr>
+		<tr>
+			<td><input type="text" id="dept4" value=""></td>
+			<td><input type="text" id="course4" value=""></td>
+			<td><input type="text" id="credit4" value=""></td>
+			<td><input type="text" id="title4" value=""></td>
+			<td><input type="text" id="equ4" value=""></td> 
+		</tr>
+		<tr>
+			<td><input type="text" id="dept5" value=""></td>
+			<td><input type="text" id="course5" value=""></td>
+			<td><input type="text" id="credit5" value=""></td>
+			<td><input type="text" id="title5" value=""></td>
+			<td><input type="text" id="equ5" value=""></td> 
+		</tr>
+		<tr>
+			<td><input type="text" id="dept6" value=""></td>
+			<td><input type="text" id="course6" value=""></td>
+			<td><input type="text" id="credit6" value=""></td>
+			<td><input type="text" id="title6" value=""></td>
+			<td><input type="text" id="equ6" value=""></td> 
+		</tr>
+	</tabel>
+	<button type="button" id="submit">Submit</button>
+</body>
+</html>

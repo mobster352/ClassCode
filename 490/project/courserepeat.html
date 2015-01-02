@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Course Repeat Request</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready( function() {
+	alert("ready");
+	var studid;
+	$.ajax({ 
+		url: "http://localhost8080/formswebapp/resources/user",
+		type: "GET",
+		dataType: "text",
+		contentType: "application/x-www-form-urlencoded",
+		data: theData,
+		
+		success: function(result,status,jqxhr) {
+			alert("success");
+			var array = JSON.parse(result);
+			var stud = array[0];
+			var output = "Last name: " + stud.lastName + " First name: " + stud.firstName + " Middle name: " + stud.middleName
+			+ "\n" + "Student ID: " + stud.id + " Telephone number: " + stud.telephone 
+			+ "\n" + "Local address: " + stud.streetAddress
+			+ "\n" + "City: " + stud.city + " State: " + stud.state + " Zip code: " + stud.zip
+			+ "\n" + "Major: " + stud.major + " Minor: " + stud.minor + "Catalog Year: " + stud.catalogYear;
+			studid = stud.id;
+			$("#studentinfo").html(output);
+		},
+		error: function(xhr, status, errorThrown) {
+			$("#studentinfo").html("Error:" + xhr.status + " " + xhr.statusText);
+		}
+	});
+	
+	$("#submit").click(function(){
+		var repeat = document.getElementById("repeat").value;
+		var termtaken = document.getElementById("termTaken").value;
+		var grade = document.getElementById("grade").value;
+		var termrepeat = document.getElementById("termRepeat").value;
+
+		var theUrl = "http://localhost:8080/formswebapp/resources/courserepeat";
+
+		var theData = "repeat="+repeat+"&"+"termTaken="+termtaken+"&"+"grade="+grade+"&"+"termRepeat="
+				+termrepeat;
+		
+		$.ajax({
+			url: theUrl,
+			type: "POST",
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: theData,
+		
+			success: function(result,status,jqxhr) {
+				alert("success");
+			},
+			error: function(xhr,status,errorThrown) {
+				alert("error: "+status+" e: "+errorThrown);
+			}
+		});
+	});
+});
+</script>
+</head>
+<body>
+	<h2>Course Repeat Request</h2>
+	<br>
+	<ul>
+		<li>Only courses taken at Coastal Carolina University with course grades of C,D+,D,F,or WF are eligible for 'Repeat Forgiveness'.</li>
+		<li>'Repeat Forgiveness' may be elected for a maximum of 13 undergraduate credits.</li>
+		<li>This completed form must be submitted to the Office of the Registrar by the last date to drop with a grade of "W" for the semester in which the course is being repeated. Check the Academic Calendar to determine the appropriate date.</li>
+	</ul>
+	<label>Please note:</label>
+	<ul>
+		<li>For the course specified as being repeated, Coastal Carolina University will exclude the grade and credit hours earned when calculating the student's cumulative GPA and earned credit hours.</li>
+		<li>A course that has been repeated will count only once towards meeting graduation requirements.</li>
+		<li>All grades (original and repeat) will appear on the transcript and be used in the calculation of graduation with honors.</li>
+		<li>Professional schools, graduate programs, and future employers may apply their own criteria that may not recognize a "repeat forgiveness" option in evaluating credentials for prospective students and employees.</li>
+		<li>For financial aid and scholarship purposes, duplicate credits do not count as credits completed for satisfactory academic progress except in certain cases (please check with the Office of Financial Aid for details).</li>
+	</ul>
+	<hr>
+	<label>Student Information:</label>
+	<div id="studentinfo"></div>
+	<label>Course Information:</label>
+	<div id="courseinfo">
+		<form id="courseinfo">
+			Course to be repeated (example: ENGL 101) <input type="text" id="repeat" value=""><br>
+			Term course was taken <input type="text" id="termTaken" value="">
+			Grade earned <input type="text" id="grade" value=""><br>
+			Term course is being repeated <input type="text" id="termRepeat" value=""><br>
+		</form>
+	</div>
+	<button type="button" id="submit">Submit</button>
+</body>
+</html>
